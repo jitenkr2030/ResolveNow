@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ user.full_name }} Account Dashboard - ResolveNow{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="portal-hero">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>Hello, {{ user.first_name }}!</h2>
+                <p class="mb-0 opacity-75">{{ user.get_role_display }} account - {{ user.email }}</p>
+            </div>
+            <div>
+                <a href="{% url 'disputes:create' %}" class="btn btn-accent btn-lg"><i class="bi bi-plus-circle me-2"></i>File a Dispute</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3"><div class="rn-stat-card"><div class="rn-stat-value">{{ user.filed_disputes.count }}</div><div class="rn-stat-label">Disputes Filed</div></div></div>
+        <div class="col-md-3"><div class="rn-stat-card"><div class="rn-stat-value">{{ user.dispute_participations.count }}</div><div class="rn-stat-label">Cases Participating</div></div></div>
+        <div class="col-md-3"><div class="rn-stat-card"><div class="rn-stat-value">{{ user.uploaded_documents.count }}</div><div class="rn-stat-label">Documents Uploaded</div></div></div>
+        <div class="col-md-3"><div class="rn-stat-card"><div class="rn-stat-value">{{ user.notifications.filter|length }}</div><div class="rn-stat-label">Notifications</div></div></div>
+    </div>
+
+    <h4 class="fw-bold text-primary mb-3">Quick actions</h4>
+    <div class="row g-3">
+        <div class="col-md-3"><a href="{% url 'disputes:create' %}" class="rn-card text-decoration-none text-reset"><i class="bi bi-plus-circle text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">File a Dispute</h6><p class="small text-muted mb-0">Start a new dispute case</p></a></div>
+        <div class="col-md-3"><a href="{% url 'disputes:list' %}" class="rn-card text-decoration-none text-reset"><i class="bi bi-briefcase text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">My Cases</h6><p class="small text-muted mb-0">View and manage your cases</p></a></div>
+        <div class="col-md-3"><a href="{% url 'documents:list' %}" class="rn-card text-decoration-none text-reset"><i class="bi bi-folder2-open text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Documents</h6><p class="small text-muted mb-0">Upload and manage evidence</p></a></div>
+        <div class="col-md-3"><a href="{% url 'messaging:threads' %}" class="rn-card text-decoration-none text-reset"><i class="bi bi-chat-dots text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Messages</h6><p class="small text-muted mb-0">Secure in-platform messaging</p></a></div>
+        <div class="col-md-3"><a href="{% url 'mediators:directory' %}" class="rn-card text-decoration-none text-reset"><i class="bi bi-people text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Find Mediator</h6><p class="small text-muted mb-0">Browse verified mediators</p></a></div>
+        <div class="col-md-3"><a href="{% url 'payments:dashboard' %}" class="rn-card text-decoration-none text-reset"><i class="bi bi-credit-card text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Payments</h6><p class="small text-muted mb-0">View payment history</p></a></div>
+        <div class="col-md-3"><a href="{% url 'grievances:dashboard' %}" class="rn-card text-decoration-none text-reset"><i class="bi bi-exclamation-circle text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Grievances</h6><p class="small text-muted mb-0">File a complaint</p></a></div>
+        <div class="col-md-3"><a href="{% url 'ai_assistant:dashboard' %}" class="rn-card text-decoration-none text-reset"><i class="bi bi-robot text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">AI Assistant</h6><p class="small text-muted mb-0">AI dispute summary</p></a></div>
+    </div>
+</div>
+{% endblock %}

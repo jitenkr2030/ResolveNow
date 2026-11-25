@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - ResolveNow{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="portal-hero">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>Welcome, {{ user.first_name }}!</h2>
+                <p class="mb-0 opacity-75">{{ user.get_role_display }} - ResolveNow Online Dispute Resolution Platform</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'disputes:create' %}" class="btn btn-accent btn-lg"><i class="bi bi-plus-circle me-2"></i>File a Dispute</a>
+                <a href="{% url 'messaging:threads' %}" class="btn btn-outline-light btn-lg"><i class="bi bi-chat-dots me-2"></i>Messages</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4 g-3">
+        <div class="col-6 col-md-3"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.filed }}</div><div class="rn-stat-label">Disputes Filed</div></div></div>
+        <div class="col-6 col-md-3"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.active }}</div><div class="rn-stat-label">Active Cases</div></div></div>
+        <div class="col-6 col-md-3"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.completed }}</div><div class="rn-stat-label">Resolved Cases</div></div></div>
+        <div class="col-6 col-md-3"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.notifications }}</div><div class="rn-stat-label">Unread Notifications</div></div></div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-lg-3"><a href="{% url 'disputes:create' %}" class="rn-card text-decoration-none text-reset d-block h-100"><i class="bi bi-plus-circle text-warning" style="font-size:2.5rem;"></i><h6 class="rn-card-title mt-2">File a New Dispute</h6><p class="small text-muted mb-0">Start the dispute resolution process</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'disputes:list' %}" class="rn-card text-decoration-none text-reset d-block h-100"><i class="bi bi-briefcase text-warning" style="font-size:2.5rem;"></i><h6 class="rn-card-title mt-2">My Cases</h6><p class="small text-muted mb-0">View and manage your disputes</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'documents:list' %}" class="rn-card text-decoration-none text-reset d-block h-100"><i class="bi bi-folder2-open text-warning" style="font-size:2.5rem;"></i><h6 class="rn-card-title mt-2">Documents</h6><p class="small text-muted mb-0">Upload and manage evidence</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'mediators:directory' %}" class="rn-card text-decoration-none text-reset d-block h-100"><i class="bi bi-people text-warning" style="font-size:2.5rem;"></i><h6 class="rn-card-title mt-2">Find a Mediator</h6><p class="small text-muted mb-0">Browse verified mediators</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'negotiation:dashboard' %}" class="rn-card text-decoration-none text-reset d-block h-100"><i class="bi bi-chat-left-text text-warning" style="font-size:2.5rem;"></i><h6 class="rn-card-title mt-2">Negotiation</h6><p class="small text-muted mb-0">Settlement proposals</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'scheduling:dashboard' %}" class="rn-card text-decoration-none text-reset d-block h-100"><i class="bi bi-calendar-check text-warning" style="font-size:2.5rem;"></i><h6 class="rn-card-title mt-2">Scheduling</h6><p class="small text-muted mb-0">Mediation sessions</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'payments:dashboard' %}" class="rn-card text-decoration-none text-reset d-block h-100"><i class="bi bi-credit-card text-warning" style="font-size:2.5rem;"></i><h6 class="rn-card-title mt-2">Payments</h6><p class="small text-muted mb-0">Billing & invoices</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'grievances:dashboard' %}" class="rn-card text-decoration-none text-reset d-block h-100"><i class="bi bi-exclamation-circle text-warning" style="font-size:2.5rem;"></i><h6 class="rn-card-title mt-2">Grievances</h6><p class="small text-muted mb-0">File a complaint</p></a></div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-7">
+            <div class="rn-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="rn-card-title mb-0"><i class="bi bi-activity me-2"></i>Recent Activity</h5>
+                    <a href="{% url 'disputes:list' %}" class="small">View all</a>
+                </div>
+                <ul class="rn-timeline">
+                    {% for entry in recent_timeline %}
+                    <li class="rn-timeline-item">
+                        <strong>{{ entry.title }}</strong>
+                        <div class="small text-muted">{{ entry.created_at|timesince }} ago &middot; {{ entry.get_entry_type_display }} &middot; {{ entry.dispute.case_ref }}</div>
+                    </li>
+                    {% empty %}
+                    <li class="rn-empty-state"><i class="bi bi-activity d-block mb-2"></i>No recent activity. <a href="{% url 'disputes:create' %}">File a dispute to get started.</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="rn-card mb-3">
+                <h5 class="rn-card-title"><i class="bi bi-calendar-event me-2"></i>Upcoming Sessions</h5>
+                {% if upcoming_sessions %}
+                <ul class="list-group list-group-flush">
+                    {% for s in upcoming_sessions %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div>
+                            <strong>{{ s.title }}</strong>
+                            <div class="small text-muted">{{ s.scheduled_start|date:"M d, Y H:i" }}</div>
+                        </div>
+                        <a href="{% url 'scheduling:session_detail' session_id=s.pk %}" class="btn btn-sm btn-outline-primary align-self-center">View</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="rn-empty-state"><i class="bi bi-calendar-event d-block mb-2"></i>No upcoming sessions.</div>
+                {% endif %}
+            </div>
+            <div class="rn-card">
+                <h5 class="rn-card-title"><i class="bi bi-grid-3x3-gap me-2"></i>Dispute Categories</h5>
+                <div class="row g-2">
+                    {% for c in categories %}
+                    <div class="col-md-6"><a href="{% url 'categories:detail' slug=c.slug %}" class="border rounded p-2 text-decoration-none text-reset d-block"><strong>{{ c.name }}</strong><div class="small text-muted">{{ c.examples|truncatechars:30 }}</div></a></div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'categories:list' %}" class="small d-block mt-2 text-decoration-none">View all 12 categories <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    {% if assigned_cases %}
+    <div class="mt-4">
+        <div class="rn-card">
+            <h5 class="rn-card-title"><i class="bi bi-award me-2"></i>My Assigned Mediation Cases</h5>
+            <table class="table table-sm">
+                <thead><tr><th>Case Ref</th><th>Title</th><th>Status</th><th>Next Session</th></tr></thead>
+                <tbody>
+                    {% for c in assigned_cases %}
+                    <tr><td><code>{{ c.case_ref }}</code></td><td>{{ c.title|truncatechars:50 }}</td><td><span class="status-badge status-{{ c.status }}">{{ c.get_status_display }}</span></td><td>-</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <div class="rn-card">
+            <h5 class="rn-card-title"><i class="bi bi-shield-check me-2"></i>Account Security Status</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <p class="small"><i class="bi bi-{% if user.is_email_verified %}check-circle text-success{% else %}clock text-warning{% endif %}"></i> Email verified</p>
+                </div>
+                <div class="col-md-4">
+                    <p class="small"><i class="bi bi-{% if user.is_mobile_verified %}check-circle text-success{% else %}clock text-warning{% endif %}"></i> Mobile verified</p>
+                </div>
+                <div class="col-md-4">
+                    <p class="small"><i class="bi bi-{% if user.identity_verified %}check-circle text-success{% else %}clock text-warning{% endif %}"></i> Identity verified (KYC)</p>
+                </div>
+            </div>
+            {% if not user.is_email_verified or not user.identity_verified %}
+            <a href="{% url 'verification:dashboard' %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-shield-check me-1"></i>Complete verification</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

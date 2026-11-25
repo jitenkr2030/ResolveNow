@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - ResolveNow{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="portal-hero">
+        <div>
+            <h2><i class="bi bi-gear-fill me-2"></i>Admin Dashboard</h2>
+            <p class="mb-0 opacity-75">Manage platform operations - users, cases, mediators, payments and compliance</p>
+        </div>
+    </div>
+
+    <div class="row mb-4 g-3">
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.total_users }}</div><div class="rn-stat-label">Registered Users</div></div></div>
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.total_disputes }}</div><div class="rn-stat-label">Total Disputes</div></div></div>
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.pending_applications }}</div><div class="rn-stat-label">Pending Applications</div></div></div>
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.active_cases }}</div><div class="rn-stat-label">Active Cases</div></div></div>
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.unassigned_cases }}</div><div class="rn-stat-label">Unassigned Cases</div></div></div>
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.registered_mediators }}</div><div class="rn-stat-label">Registered Mediators</div></div></div>
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.verified_mediators }}</div><div class="rn-stat-label">Verified Mediators</div></div></div>
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.pending_mediator_verifications }}</div><div class="rn-stat-label">Pending Verifications</div></div></div>
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.organizations }}</div><div class="rn-stat-label">Organizations</div></div></div>
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.complaints_open }}</div><div class="rn-stat-label">Open Complaints</div></div></div>
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">₹{{ stats.total_revenue|floatformat:0 }}</div><div class="rn-stat-label">Total Revenue</div></div></div>
+        <div class="col-6 col-md-3 col-lg-2"><div class="rn-stat-card"><div class="rn-stat-value">{{ stats.security_incidents_open }}</div><div class="rn-stat-label">Open Security Incidents</div></div></div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="rn-card">
+                <h5 class="rn-card-title"><i class="bi bi-graph-pie me-2"></i>Disputes by Status</h5>
+                <ul class="list-unstyled">
+                    {% for sb in status_breakdown %}
+                    <li class="d-flex justify-content-between align-items-center py-1">
+                        <span class="status-badge status-{{ sb.status }}">{{ sb.status|title }}</span>
+                        <span class="badge bg-primary rounded-pill">{{ sb.count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="rn-card">
+                <h5 class="rn-card-title"><i class="bi bi-graph-pie me-2"></i>Disputes by Category</h5>
+                <ul class="list-unstyled">
+                    {% for cb in category_breakdown %}
+                    <li class="d-flex justify-content-between align-items-center py-1">
+                        <span>{{ cb.category__name|default:"Uncategorized" }}</span>
+                        <span class="badge bg-secondary rounded-pill">{{ cb.count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-lg-4">
+            <div class="rn-card">
+                <h5 class="rn-card-title"><i class="bi bi-clock-history me-2"></i>Recent Activity</h5>
+                <ul class="list-unstyled small">
+                    {% for log in recent_audits %}
+                    <li class="mb-1"><code class="small">{{ log.timestamp|date:"M d H:i" }}</code> - {{ log.description|truncatechars:60 }}</li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'admin_dash:audit_logs' %}" class="small">View all audit logs</a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="rn-card">
+                <h5 class="rn-card-title"><i class="bi bi-briefcase me-2"></i>Recent Disputes</h5>
+                <ul class="list-unstyled small">
+                    {% for d in recent_disputes %}
+                    <li class="mb-1"><code>{{ d.case_ref }}</code> - <a href="{% url 'disputes:detail' pk=d.pk %}">{{ d.title|truncatechars:30 }}</a></li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'admin_dash:cases' %}" class="small">View all cases</a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="rn-card">
+                <h5 class="rn-card-title"><i class="bi bi-exclamation-circle me-2"></i>Recent Complaints</h5>
+                <ul class="list-unstyled small">
+                    {% for c in recent_complaints %}
+                    <li class="mb-1"><code>{{ c.complaint_ref }}</code> - <a href="{% url 'grievances:detail' pk=c.pk %}">{{ c.subject|truncatechars:30 }}</a></li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'admin_dash:complaints' %}" class="small">View all complaints</a>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="fw-bold text-primary mb-3">Administrative Modules</h4>
+    <div class="row g-3">
+        <div class="col-md-6 col-lg-3"><a href="{% url 'admin_dash:users' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-people text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">User Management</h6><p class="small text-muted mb-0">Manage all users, roles, suspensions</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'admin_dash:cases' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-briefcase text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Case Monitoring</h6><p class="small text-muted mb-0">Monitor all cases</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'admin_dash:categories' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-grid text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Category Management</h6><p class="small text-muted mb-0">Manage dispute categories</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'admin_dash:fees' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-cash-stack text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Fee Configuration</h6><p class="small text-muted mb-0">Platform fees, taxes</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'admin_dash:payments' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-credit-card text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Payment Monitoring</h6><p class="small text-muted mb-0">Payments, refunds, invoices</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'admin_dash:complaints' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-exclamation-circle text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Complaint Management</h6><p class="small text-muted mb-0">Platform complaints</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'admin_dash:content' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-file-earmark-text text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Content Management</h6><p class="small text-muted mb-0">Pages, policies, content</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'admin_dash:settings' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-gear text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Platform Settings</h6><p class="small text-muted mb-0">System configuration</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'admin_dash:audit_logs' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-journal-text text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Audit Logs</h6><p class="small text-muted mb-0">Activity audit trails</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'admin_dash:security' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-shield-exclamation text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">Security Monitoring</h6><p class="small text-muted mb-0">Security incidents</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'admin_dash:reports' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-bar-chart-line text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">System Reports</h6><p class="small text-muted mb-0">Platform-wide reports</p></a></div>
+        <div class="col-md-6 col-lg-3"><a href="{% url 'analytics:dashboard' %}" class="rn-card text-decoration-none text-reset d-block"><i class="bi bi-graph-up text-warning" style="font-size:2rem;"></i><h6 class="rn-card-title mt-2">ODR Analytics</h6><p class="small text-muted mb-0">Platform performance</p></a></div>
+    </div>
+</div>
+{% endblock %}

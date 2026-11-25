@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}My Cases - ResolveNow{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-0"><i class="bi bi-briefcase me-2"></i>Dispute Cases</h2>
+            <p class="text-muted mb-0">Centralized case dashboard - all your disputes in one place</p>
+        </div>
+        <a href="{% url 'disputes:create' %}" class="btn btn-accent btn-lg"><i class="bi bi-plus-circle me-2"></i>File a Dispute</a>
+    </div>
+
+    <form method="get" class="mb-4">
+        <div class="row g-2">
+            <div class="col-md-3"><select name="status" class="form-select"><option value="">All statuses</option>{% for v, l in statuses %}<option value="{{ v }}" {% if status_filter == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+            <div class="col-md-3"><select name="category" class="form-select"><option value="">All categories</option>{% for c in categories %}<option value="{{ c.id }}" {% if category_filter|slugify == c.id|slugify %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
+            <div class="col-md-3"><button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel me-2"></i>Filter</button></div>
+            <div class="col-md-3"><a href="{% url 'disputes:list' %}" class="btn btn-outline-secondary w-100">Clear</a></div>
+        </div>
+    </form>
+
+    <div class="rn-table-card">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Case Ref</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Filed On</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in disputes %}
+                <tr onclick="window.location='{% url 'disputes:detail' pk=d.pk %}'">
+                    <td><code class="fw-bold">{{ d.case_ref }}</code></td>
+                    <td>{{ d.title|truncatechars:40 }}</td>
+                    <td>{{ d.category.name }}</td>
+                    <td>{% if d.is_amount_confidential %}<span class="text-muted">Confidential</span>{% else %}₹{{ d.disputed_amount|floatformat:0 }}{% endif %}</td>
+                    <td><span class="status-badge status-{{ d.status }}">{{ d.get_status_display }}</span></td>
+                    <td><span class="badge bg-{% if d.priority == 'urgent' %}danger{% elif d.priority == 'high' %}warning{% elif d.priority == 'medium' %}info{% else %}secondary{% endif %}">{{ d.get_priority_display }}</span></td>
+                    <td>{{ d.created_at|date:"M d, Y" }}</td>
+                    <td><a href="{% url 'disputes:detail' pk=d.pk %}" class="btn btn-sm btn-outline-primary">View</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="rn-empty-state"><i class="bi bi-briefcase d-block mb-3"></i>No disputes found. <a href="{% url 'disputes:create' %}">File your first dispute</a>.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if is_paginated %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>{% endif %}
+            <li class="page-item active"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.num_pages }}</span></li>
+            {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>{% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

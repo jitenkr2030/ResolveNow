@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+{% block title %}{{ dispute.case_ref }} - ResolveNow{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <a href="{% url 'disputes:list' %}" class="text-decoration-none small"><i class="bi bi-arrow-left"></i> Back to cases</a>
+            <h2 class="fw-bold text-primary mb-0 mt-1"><code>{{ dispute.case_ref }}</code></h2>
+            <p class="text-muted mb-0">{{ dispute.title }}</p>
+        </div>
+        <div class="text-end">
+            <span class="status-badge status-{{ dispute.status }}">{{ dispute.get_status_display }}</span>
+            <span class="badge bg-{% if dispute.priority == 'urgent' %}danger{% elif dispute.priority == 'high' %}warning{% elif dispute.priority == 'medium' %}info{% else %}secondary{% endif %} ms-2">{{ dispute.get_priority_display }}</span>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#parties">Parties ({{ parties|length }})</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#documents">Documents ({{ documents|length }})</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#timeline">Timeline ({{ timeline|length }})</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#proposals">Proposals ({{ proposals|length }})</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#sessions">Sessions ({{ scheduled_sessions|length }})</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#payments">Payments ({{ payments|length }})</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#messages">Messages ({{ threads|length }})</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#settlements">Settlements ({{ settlement_records|length }})</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="overview">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="rn-card mb-3">
+                        <h5 class="rn-card-title">Dispute Description</h5>
+                        <p>{{ dispute.description|linebreaksbr }}</p>
+                        {% if dispute.agreement_reference %}<p><strong>Agreement Ref:</strong> {{ dispute.agreement_reference }}{% if dispute.agreement_date %} (dated {{ dispute.agreement_date|date:"M d, Y" }}){% endif %}</p>{% endif %}
+                        {% if dispute.agreement_summary %}<p><strong>Agreement Summary:</strong> {{ dispute.agreement_summary }}</p>{% endif %}
+                        {% if dispute.previous_communication_history %}<p><strong>Previous Communication:</strong> {{ dispute.previous_communication_history }}</p>{% endif %}
+                        <p><strong>Requested Resolution:</strong> {{ dispute.requested_resolution }}</p>
+                    </div>
+                    <div class="rn-card mb-3">
+                        <h5 class="rn-card-title">Key Information</h5>
+                        <div class="row g-3 small">
+                            <div class="col-md-4"><strong>Category:</strong> {{ dispute.category.name }}</div>
+                            <div class="col-md-4"><strong>Disputed Amount:</strong> {% if dispute.is_amount_confidential %}<span class="text-muted">Confidential</span>{% else %}₹{{ dispute.disputed_amount|floatformat:0 }}{% endif %}</div>
+                            <div class="col-md-4"><strong>Jurisdiction:</strong> {{ dispute.jurisdiction }}</div>
+                            <div class="col-md-4"><strong>Claimant:</strong> {{ dispute.claimant.get_full_name }}</div>
+                            <div class="col-md-4"><strong>Filed On:</strong> {{ dispute.created_at|date:"M d, Y H:i" }}</div>
+                            <div class="col-md-4"><strong>Submitted:</strong> {% if dispute.submitted_at %}{{ dispute.submitted_at|date:"M d, Y" }}{% else %}Draft{% endif %}</div>
+                            {% if dispute.assigned_case_manager %}<div class="col-md-4"><strong>Case Manager:</strong> {{ dispute.assigned_case_manager.email }}</div>{% endif %}
+                            {% if dispute.assigned_mediator %}<div class="col-md-4"><strong>Mediator:</strong> {{ dispute.assigned_mediator.user.get_full_name }}</div>{% endif %}
+                            {% if dispute.response_deadline %}<div class="col-md-4"><strong>Response Deadline:</strong> {{ dispute.response_deadline|date:"M d, Y" }}</div>{% endif %}
+                            {% if dispute.negotiation_deadline %}<div class="col-md-4"><strong>Negotiation Deadline:</strong> {{ dispute.negotiation_deadline|date:"M d, Y" }}</div>{% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="rn-card mb-3">
+                        <h5 class="rn-card-title">Actions</h5>
+                        <div class="d-grid gap-2">
+                            {% if can_submit %}
+                            <form method="post" action="{% url 'disputes:submit' pk=dispute.pk %}">{% csrf_token %}<button type="submit" class="btn btn-accent w-100"><i class="bi bi-send me-2"></i>Submit for Acknowledgement</button></form>
+                            {% endif %}
+                            {% if dispute.is_draft %}
+                            <a href="{% url 'disputes:edit' pk=dispute.pk %}" class="btn btn-outline-primary"><i class="bi bi-pencil me-2"></i>Edit Draft</a>
+                            {% endif %}
+                            <a href="{% url 'documents:upload' dispute_id=dispute.pk %}" class="btn btn-outline-primary"><i class="bi bi-upload me-2"></i>Upload Document</a>
+                            <a href="{% url 'negotiation:room' dispute_id=dispute.pk %}" class="btn btn-outline-primary"><i class="bi bi-chat-left-text me-2"></i>Open Negotiation</a>
+                            <a href="{% url 'negotiation:proposal_create' dispute_id=dispute.pk %}" class="btn btn-outline-primary"><i class="bi bi-file-earmark-text me-2"></i>Make Settlement Proposal</a>
+                            <a href="{% url 'mediator_assignment:request' dispute_id=dispute.pk %}" class="btn btn-outline-primary"><i class="bi bi-person-plus me-2"></i>Request Mediator</a>
+                            <a href="{% url 'scheduling:schedule' dispute_id=dispute.pk %}" class="btn btn-outline-primary"><i class="bi bi-calendar-plus me-2"></i>Schedule Session</a>
+                            <a href="{% url 'disputes:eligibility' pk=dispute.pk %}" class="btn btn-outline-primary"><i class="bi bi-check2-square me-2"></i>Run Eligibility Check</a>
+                            {% if dispute.status != 'withdrawn' and dispute.status != 'closed' and dispute.claimant == user %}
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#withdrawModal"><i class="bi bi-x-circle me-2"></i>Withdraw Case</button>
+                            {% endif %}
+                            {% if dispute.is_closed %}
+                            <form method="post" action="{% url 'disputes:reopen' pk=dispute.pk %}">{% csrf_token %}<input type="text" name="reason" class="form-control form-control-sm mb-2" placeholder="Reason for reopening" required><button type="submit" class="btn btn-outline-secondary w-100"><i class="bi bi-arrow-clockwise me-2"></i>Request Reopening</button></form>
+                            {% endif %}
+                            {% if is_admin_user %}
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#closeModal"><i class="bi bi-check2-all me-2"></i>Close Case (Admin)</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="parties">
+            <div class="rn-card">
+                <h5 class="rn-card-title">Parties to the Dispute</h5>
+                <table class="table">
+                    <thead><tr><th>Name</th><th>Role</th><th>Email</th><th>Status</th><th>Joined</th></tr></thead>
+                    <tbody>
+                        {% for p in parties %}
+                        <tr>
+                            <td>{{ p.user.get_full_name }}</td>
+                            <td><span class="badge bg-primary">{{ p.get_role_display }}</span></td>
+                            <td>{{ p.contact_email|default:p.user.email }}</td>
+                            <td><span class="badge bg-{% if p.invitation_status == 'accepted' %}success{% elif p.invitation_status == 'pending' %}warning{% else %}danger{% endif %}">{{ p.get_invitation_status_display }}</span></td>
+                            <td>{% if p.joined_at %}{{ p.joined_at|date:"M d, Y" }}{% else %}Pending{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% if can_edit %}
+                <h6 class="mt-3">Invite another party</h6>
+                <form method="post" action="{% url 'disputes:invite_party' pk=dispute.pk %}" class="row g-2">
+                    {% csrf_token %}
+                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="Party email" required></div>
+                    <div class="col-md-3"><select name="role" class="form-select">{% for v, l in invite_form.role.field.choices %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select></div>
+                    <div class="col-md-3"><input type="text" name="contact_phone" class="form-control" placeholder="Phone (optional)"></div>
+                    <div class="col-md-2"><button type="submit" class="btn btn-primary w-100"><i class="bi bi-send me-1"></i>Invite</button></div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="documents">
+            <div class="rn-card">
+                <div class="d-flex justify-content-between">
+                    <h5 class="rn-card-title">Case Documents</h5>
+                    <a href="{% url 'documents:upload' dispute_id=dispute.pk %}" class="btn btn-sm btn-accent"><i class="bi bi-upload me-1"></i>Upload</a>
+                </div>
+                {% if documents %}
+                <table class="table">
+                    <thead><tr><th>Document</th><th>Category</th><th>Uploaded By</th><th>Date</th><th></th></tr></thead>
+                    <tbody>
+                        {% for doc in documents %}
+                        <tr>
+                            <td><i class="bi bi-file-earmark"></i> {{ doc.title }}</td>
+                            <td><span class="badge bg-info">{{ doc.get_category_display }}</span></td>
+                            <td>{{ doc.uploaded_by.get_full_name }}</td>
+                            <td>{{ doc.created_at|date:"M d, Y" }}</td>
+                            <td><a href="{% url 'documents:download' pk=doc.pk %}" class="btn btn-sm btn-outline-primary">Download</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="rn-empty-state"><i class="bi bi-folder2-open d-block mb-3"></i>No documents uploaded yet. <a href="{% url 'documents:upload' dispute_id=dispute.pk %}">Upload the first document</a>.</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="timeline">
+            <div class="rn-card">
+                <h5 class="rn-card-title">Case Timeline</h5>
+                <ul class="rn-timeline">
+                    {% for entry in timeline %}
+                    <li class="rn-timeline-item">
+                        <strong>{{ entry.title }}</strong>
+                        <div class="small text-muted">{{ entry.created_at|date:"M d, Y H:i" }} by {{ entry.actor|default:"System" }} &middot; {{ entry.get_entry_type_display }}</div>
+                        {% if entry.description %}<div class="small">{{ entry.description }}</div>{% endif %}
+                    </li>
+                    {% empty %}
+                    <li class="rn-empty-state">No activity recorded yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="proposals">
+            <div class="rn-card">
+                <div class="d-flex justify-content-between">
+                    <h5 class="rn-card-title">Settlement Proposals</h5>
+                    <a href="{% url 'negotiation:proposal_create' dispute_id=dispute.pk %}" class="btn btn-sm btn-accent"><i class="bi bi-plus me-1"></i>New Proposal</a>
+                </div>
+                {% if proposals %}
+                <table class="table">
+                    <thead><tr><th>Title</th><th>Type</th><th>Amount</th><th>Status</th><th>Submitted</th></tr></thead>
+                    <tbody>
+                        {% for p in proposals %}
+                        <tr>
+                            <td>{{ p.title }}</td>
+                            <td><span class="badge bg-secondary">{{ p.get_proposal_type_display }}</span></td>
+                            <td>{% if p.payment_amount %}₹{{ p.payment_amount|floatformat:0 }}{% else %}-{% endif %}</td>
+                            <td><span class="status-badge status-{{ p.status }}">{{ p.get_status_display }}</span></td>
+                            <td>{% if p.submitted_at %}{{ p.submitted_at|date:"M d, Y" }}{% else %}Draft{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="rn-empty-state"><i class="bi bi-file-earmark-text d-block mb-3"></i>No proposals yet.</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="sessions">
+            <div class="rn-card">
+                <h5 class="rn-card-title">Scheduled Mediation Sessions</h5>
+                {% if scheduled_sessions %}
+                <table class="table">
+                    <thead><tr><th>Title</th><th>Type</th><th>Scheduled</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                        {% for s in scheduled_sessions %}
+                        <tr>
+                            <td>{{ s.title }}</td>
+                            <td>{{ s.get_session_type_display }}</td>
+                            <td>{{ s.scheduled_start|date:"M d, Y H:i" }}</td>
+                            <td><span class="badge bg-{% if s.status == 'completed' %}success{% elif s.status == 'cancelled' %}danger{% else %}info{% endif %}">{{ s.get_status_display }}</span></td>
+                            <td><a href="{% url 'scheduling:session_detail' session_id=s.pk %}" class="btn btn-sm btn-outline-primary">View</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="rn-empty-state"><i class="bi bi-calendar d-block mb-3"></i>No sessions scheduled. <a href="{% url 'scheduling:schedule' dispute_id=dispute.pk %}">Schedule a session</a>.</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="payments">
+            <div class="rn-card">
+                <h5 class="rn-card-title">Payment History</h5>
+                {% if payments %}
+                <table class="table">
+                    <thead><tr><th>Reference</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody>
+                        {% for p in payments %}
+                        <tr>
+                            <td><code>{{ p.payment_ref }}</code></td>
+                            <td>{{ p.get_payment_type_display }}</td>
+                            <td>₹{{ p.total_amount|floatformat:0 }}</td>
+                            <td><span class="badge bg-{% if p.status == 'successful' %}success{% elif p.status == 'failed' %}danger{% else %}warning{% endif %}">{{ p.get_status_display }}</span></td>
+                            <td>{{ p.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="rn-empty-state"><i class="bi bi-credit-card d-block mb-3"></i>No payments recorded.</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="messages">
+            <div class="rn-card">
+                <div class="d-flex justify-content-between">
+                    <h5 class="rn-card-title">Discussion Threads</h5>
+                    <a href="{% url 'messaging:dispute_threads' dispute_id=dispute.pk %}" class="btn btn-sm btn-primary">Open Messaging</a>
+                </div>
+                {% if threads %}
+                <ul class="list-group">
+                    {% for t in threads %}
+                    <li class="list-group-item d-flex justify-content-between"><div><strong>{{ t.title }}</strong><div class="small text-muted">{{ t.get_thread_type_display }} - {{ t.last_message_at|default:"No messages" }}</div></div><a href="{% url 'messaging:thread_detail' thread_id=t.pk %}" class="btn btn-sm btn-outline-primary">Open</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="rn-empty-state"><i class="bi bi-chat-dots d-block mb-3"></i>No threads.</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="settlements">
+            <div class="rn-card">
+                <h5 class="rn-card-title">Settlement Records</h5>
+                {% if settlement_records %}
+                <table class="table">
+                    <thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Created</th></tr></thead>
+                    <tbody>
+                        {% for s in settlement_records %}
+                        <tr>
+                            <td>{{ s.title }}</td>
+                            <td>{{ s.get_settlement_type_display }}</td>
+                            <td><span class="badge bg-{% if s.status == 'executed' %}success{% elif s.status == 'fully_signed' %}info{% else %}warning{% endif %}">{{ s.get_status_display }}</span></td>
+                            <td>{{ s.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="rn-empty-state"><i class="bi bi-file-earmark-check d-block mb-3"></i>No settlement records yet.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="withdrawModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'disputes:withdraw' pk=dispute.pk %}">{% csrf_token %}
+                <div class="modal-header"><h5 class="modal-title">Withdraw Case</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <p class="text-muted">Are you sure you want to withdraw this dispute? This action cannot be undone.</p>
+                    <div class="mb-3"><label class="form-label">Reason for withdrawal *</label><textarea name="reason" class="form-control" rows="3" required></textarea></div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-danger">Yes, withdraw case</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="closeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'disputes:close' pk=dispute.pk %}">{% csrf_token %}
+                <div class="modal-header"><h5 class="modal-title">Close Case (Admin)</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">Closure reason *</label><textarea name="closure_reason" class="form-control" rows="3" required></textarea></div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-warning">Close Case</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

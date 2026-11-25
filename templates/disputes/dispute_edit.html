@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Edit Dispute - ResolveNow{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h2 class="fw-bold text-primary mb-1"><i class="bi bi-pencil me-2"></i>Edit Draft Dispute</h2>
+        <p class="text-muted mb-0">{{ dispute.case_ref }} - {{ dispute.title }}</p>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <div class="rn-card">
+            <h5 class="rn-card-title">Dispute Overview</h5>
+            <div class="mb-3"><label class="form-label">Dispute Title *</label>{{ form.title }}</div>
+            <div class="mb-3"><label class="form-label">Description *</label>{{ form.description }}</div>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="form-label">Category *</label>{{ form.category }}</div>
+                <div class="col-md-6"><label class="form-label">Sub-category</label>{{ form.sub_category }}</div>
+            </div>
+            <hr>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="form-label">Disputed Amount *</label>{{ form.disputed_amount }}</div>
+                <div class="col-md-3"><label class="form-label">Currency</label>{{ form.currency }}</div>
+                <div class="col-md-3"><div class="form-check mt-4">{{ form.is_amount_confidential }}<label class="form-check-label">Confidential</label></div></div>
+            </div>
+            <hr>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="form-label">Agreement Reference</label>{{ form.agreement_reference }}</div>
+                <div class="col-md-6"><label class="form-label">Agreement Date</label>{{ form.agreement_date }}</div>
+                <div class="col-md-12"><label class="form-label">Agreement Summary</label>{{ form.agreement_summary }}</div>
+                <div class="col-md-12"><label class="form-label">Previous Communication</label>{{ form.previous_communication_history }}</div>
+            </div>
+            <hr>
+            <div class="mb-3"><label class="form-label">Requested Resolution *</label>{{ form.requested_resolution }}</div>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="form-label">Jurisdiction</label>{{ form.jurisdiction }}</div>
+                <div class="col-md-6"><label class="form-label">Location</label>{{ form.location_of_dispute }}</div>
+            </div>
+            <hr>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="form-label">Priority</label>{{ form.priority }}</div>
+                <div class="col-md-6"><div class="form-check mt-4">{{ form.is_confidential }}<label class="form-check-label">Confidential case</label></div></div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save me-2"></i>Save Changes</button>
+                <a href="{% url 'disputes:detail' pk=dispute.pk %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

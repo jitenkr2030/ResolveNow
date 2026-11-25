@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+{% block title %}ResolveNow - Online Dispute Resolution Platform{% endblock %}
+{% block content %}
+<section class="rn-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <span class="badge bg-warning text-dark mb-3 fs-6 px-3 py-2">Online Dispute Resolution (ODR) Platform</span>
+                <h1>Resolve Disputes Online.<br>Fairly. Efficiently.</h1>
+                <p>ResolveNow enables individuals, businesses, lawyers and professional mediators to resolve suitable disputes through online negotiation, mediation, secure communication and documented settlements — without necessarily going through conventional litigation.</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard:home' %}" class="btn btn-accent btn-lg"><i class="bi bi-speedometer2 me-2"></i>Go to Dashboard</a>
+                    <a href="{% url 'disputes:create' %}" class="btn btn-outline-light btn-lg"><i class="bi bi-plus-circle me-2"></i>File a Dispute</a>
+                    {% else %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-accent btn-lg"><i class="bi bi-person-plus me-2"></i>Get Started Free</a>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg"><i class="bi bi-box-arrow-in-right me-2"></i>Sign in</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card bg-white text-dark shadow">
+                    <div class="card-body p-4">
+                        <h5 class="card-title text-primary mb-3"><i class="bi bi-bar-chart-line me-2"></i>Platform Statistics</h5>
+                        <div class="row g-3">
+                            <div class="col-6"><div class="rn-stat-card"><div class="rn-stat-value">1,240+</div><div class="rn-stat-label">Active Cases</div></div></div>
+                            <div class="col-6"><div class="rn-stat-card"><div class="rn-stat-value">320</div><div class="rn-stat-label">Verified Mediators</div></div></div>
+                            <div class="col-6"><div class="rn-stat-card"><div class="rn-stat-value">87%</div><div class="rn-stat-label">Settlement Rate</div></div></div>
+                            <div class="col-6"><div class="rn-stat-card"><div class="rn-stat-value">21 days</div><div class="rn-stat-label">Avg Resolution</div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-primary">Everything you need to resolve disputes online</h2>
+            <p class="text-muted">From filing the dispute to executing a mediated settlement agreement.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="rn-card">
+                    <div class="text-warning mb-3"><i class="bi bi-file-earmark-text" style="font-size:2.5rem;"></i></div>
+                    <h5 class="rn-card-title">Dispute Registration</h5>
+                    <p class="text-muted">File a new dispute in any of 12 categories — Commercial, Financial, Employment, Consumer, Property, Family and more. Upload supporting documents, identify claimant and respondent, set the disputed amount and outline your requested resolution.</p>
+                    <a class="btn btn-link text-decoration-none p-0" href="{% url 'disputes:create' %}">File a dispute <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="rn-card">
+                    <div class="text-warning mb-3"><i class="bi bi-chat-left-text" style="font-size:2.5rem;"></i></div>
+                    <h5 class="rn-card-title">Negotiation Workspace</h5>
+                    <p class="text-muted">Private negotiation rooms, party-to-party communication, counteroffers, instalment settlement proposals, deadlines and full activity history — with optional mediator assistance.</p>
+                    <a class="btn btn-link text-decoration-none p-0" href="{% url 'negotiation:dashboard' %}">Open workspace <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="rn-card">
+                    <div class="text-warning mb-3"><i class="bi bi-camera-video" style="font-size:2.5rem;"></i></div>
+                    <h5 class="rn-card-title">Online Mediation Room</h5>
+                    <p class="text-muted">Secure video and audio conferencing with private caucus rooms, screen sharing, document presentation, waiting room and participant controls. Recording disabled by default.</p>
+                    <a class="btn btn-link text-decoration-none p-0" href="{% url 'mediation_sessions:room' session_id=1 %}">Explore <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="rn-card">
+                    <div class="text-warning mb-3"><i class="bi bi-people" style="font-size:2.5rem;"></i></div>
+                    <h5 class="rn-card-title">Verified Mediators</h5>
+                    <p class="text-muted">Browse and select from professionally verified mediators by dispute category, language, specialization, geographic coverage and experience. Mutual selection preserves party autonomy and impartiality.</p>
+                    <a class="btn btn-link text-decoration-none p-0" href="{% url 'mediators:directory' %}">Find a mediator <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="rn-card">
+                    <div class="text-warning mb-3"><i class="bi bi-shield-check" style="font-size:2.5rem;"></i></div>
+                    <h5 class="rn-card-title">Secure Documents</h5>
+                    <p class="text-muted">Encrypted document transmission, version history, access permissions, expiry controls, document authenticity declarations and full audit trails.</p>
+                    <a class="btn btn-link text-decoration-none p-0" href="{% url 'documents:list' %}">Manage documents <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="rn-card">
+                    <div class="text-warning mb-3"><i class="bi bi-file-earmark-check" style="font-size:2.5rem;"></i></div>
+                    <h5 class="rn-card-title">Settlement Records</h5>
+                    <p class="text-muted">Generate settlement documents, capture signatures, track payment milestones and obligations. The platform distinguishes between informal settlement records and mediated settlement agreements that satisfy statutory requirements.</p>
+                    <a class="btn btn-link text-decoration-none p-0" href="{% url 'settlements:create' dispute_id=1 %}">Create settlement <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="fw-bold text-primary mb-4">For every kind of party</h2>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-start"><div class="me-3 text-warning" style="font-size:1.5rem;"><i class="bi bi-person"></i></div><div><h5 class="mb-1">Individuals & Claimants</h5><p class="text-muted mb-0">Register and manage disputes, file claims, respond to invitations, negotiate and accept settlements.</p></div></div>
+                    <div class="d-flex align-items-start"><div class="me-3 text-warning" style="font-size:1.5rem;"><i class="bi bi-building"></i></div><div><h5 class="mb-1">Businesses & Organizations</h5><p class="text-muted mb-0">Bulk dispute registration, vendor dispute management, invoice dispute tracking, multiple case dashboards and corporate reporting.</p></div></div>
+                    <div class="d-flex align-items-start"><div class="me-3 text-warning" style="font-size:1.5rem;"><i class="bi bi-bank2"></i></div><div><h5 class="mb-1">Lawyers & Legal Professionals</h5><p class="text-muted mb-0">Manage multiple client cases, review case documents, communicate with clients, mediate settlements and track professional service records.</p></div></div>
+                    <div class="d-flex align-items-start"><div class="me-3 text-warning" style="font-size:1.5rem;"><i class="bi bi-award"></i></div><div><h5 class="mb-1">Mediators</h5><p class="text-muted mb-0">Build professional profiles, accept assignments, schedule sessions, conduct mediations online and earn professional fees.</p></div></div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h2 class="fw-bold text-primary mb-4">12 dispute categories</h2>
+                <div class="row g-2">
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Commercial</strong><br><small class="text-muted">Business and contractual disputes</small></div></div>
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Financial</strong><br><small class="text-muted">Outstanding payments and invoices</small></div></div>
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Employment</strong><br><small class="text-muted">Workplace and employment disputes</small></div></div>
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Consumer</strong><br><small class="text-muted">Product and service complaints</small></div></div>
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Property</strong><br><small class="text-muted">Rental and property-related disputes</small></div></div>
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Partnership</strong><br><small class="text-muted">Business partnership disagreements</small></div></div>
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Family</strong><br><small class="text-muted">Suitable family and personal disputes</small></div></div>
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Housing</strong><br><small class="text-muted">Resident and housing society disputes</small></div></div>
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Education</strong><br><small class="text-muted">Institutional fee and service disputes</small></div></div>
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Vendor</strong><br><small class="text-muted">Supplier and customer disagreements</small></div></div>
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Technology</strong><br><small class="text-muted">IT service and software contracts</small></div></div>
+                    <div class="col-6"><div class="border rounded p-3 bg-light"><strong>Insurance</strong><br><small class="text-muted">Suitable insurance-related disputes</small></div></div>
+                </div>
+                <p class="mt-3 text-muted">The platform screens disputes for legal eligibility and suitability before accepting them into a mediation process.</p>
+                <a href="{% url 'categories:list' %}" class="btn btn-outline-primary">View all categories <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-primary">The complete dispute-resolution workflow</h2>
+            <p class="text-muted">From registration to executed settlement agreement.</p>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6 col-lg-3">
+                <div class="rn-card h-100">
+                    <div class="badge bg-warning text-dark mb-2">1</div>
+                    <h6 class="rn-card-title">Register & File Dispute</h6>
+                    <p class="text-muted small mb-0">Create your account, file a new dispute, add parties and upload documents.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="rn-card h-100">
+                    <div class="badge bg-warning text-dark mb-2">2</div>
+                    <h6 class="rn-card-title">Eligibility Screening</h6>
+                    <p class="text-muted small mb-0">The platform screens your dispute for legal eligibility and suitability for ODR.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="rn-card h-100">
+                    <div class="badge bg-warning text-dark mb-2">3</div>
+                    <h6 class="rn-card-title">Negotiate Online</h6>
+                    <p class="text-muted small mb-0">Parties exchange settlement offers, counteroffers and revised proposals in a secure workspace.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="rn-card h-100">
+                    <div class="badge bg-warning text-dark mb-2">4</div>
+                    <h6 class="rn-card-title">Mediator Assignment</h6>
+                    <p class="text-muted small mb-0">A mutually-agreed mediator is assigned after a conflict-of-interest declaration.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="rn-card h-100">
+                    <div class="badge bg-warning text-dark mb-2">5</div>
+                    <h6 class="rn-card-title">Online Mediation Sessions</h6>
+                    <p class="text-muted small mb-0">Secure video mediation with private caucus rooms, document presentation and notes.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="rn-card h-100">
+                    <div class="badge bg-warning text-dark mb-2">6</div>
+                    <h6 class="rn-card-title">Settlement Proposal</h6>
+                    <p class="text-muted small mb-0">Draft settlement terms, instalment schedules, conditions and supporting documents.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="rn-card h-100">
+                    <div class="badge bg-warning text-dark mb-2">7</div>
+                    <h6 class="rn-card-title">Execute Settlement</h6>
+                    <p class="text-muted small mb-0">Capture signatures, generate mediated settlement agreement and track compliance.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="rn-card h-100">
+                    <div class="badge bg-warning text-dark mb-2">8</div>
+                    <h6 class="rn-card-title">Closure & Archive</h6>
+                    <p class="text-muted small mb-0">Close the case, archive the record and provide mediator feedback.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h2 class="fw-bold text-primary mb-3">Built for security, privacy & compliance</h2>
+                <p class="lead text-muted">ResolveNow implements role-based access control, multi-factor authentication, encryption in transit and at rest, secure document access, data backup and recovery, activity audit trails, login monitoring, session management, consent management, confidentiality controls and applicable Indian data-protection compliance.</p>
+                <a href="{% url 'legal_compliance:dashboard' %}" class="btn btn-primary"><i class="bi bi-shield-lock me-2"></i>View compliance dashboard</a>
+            </div>
+            <div class="col-lg-5">
+                <div class="row g-3">
+                    <div class="col-6"><div class="rn-stat-card text-center"><div class="rn-stat-value">256-bit</div><div class="rn-stat-label">Encryption</div></div></div>
+                    <div class="col-6"><div class="rn-stat-card text-center"><div class="rn-stat-value">MFA</div><div class="rn-stat-label">Multi-Factor Auth</div></div></div>
+                    <div class="col-6"><div class="rn-stat-card text-center"><div class="rn-stat-value">7yr</div><div class="rn-stat-label">Audit Retention</div></div></div>
+                    <div class="col-6"><div class="rn-stat-card text-center"><div class="rn-stat-value">DPDP</div><div class="rn-stat-label">Compliance</div></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-primary">Advanced features on the roadmap</h2>
+            <p class="text-muted">Built to differentiate ResolveNow from basic case-management software.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="rn-card">
+                    <div class="text-warning mb-3"><i class="bi bi-robot" style="font-size:2.5rem;"></i></div>
+                    <h5 class="rn-card-title">AI Dispute Assistant</h5>
+                    <p class="text-muted">Summarize dispute descriptions, organize documents, identify missing information and prepare neutral case summaries for human review.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="rn-card">
+                    <div class="text-warning mb-3"><i class="bi bi-magic" style="font-size:2.5rem;"></i></div>
+                    <h5 class="rn-card-title">AI Settlement Drafting</h5>
+                    <p class="text-muted">Generate draft settlement terms based on mutually provided information for human review and adoption.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="rn-card">
+                    <div class="text-warning mb-3"><i class="bi bi-translate" style="font-size:2.5rem;"></i></div>
+                    <h5 class="rn-card-title">Multilingual Mediation</h5>
+                    <p class="text-muted">Support Hindi, English and regional Indian languages with translation assistance for parties and mediators.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="rn-card">
+                    <div class="text-warning mb-3"><i class="bi bi-graph-up" style="font-size:2.5rem;"></i></div>
+                    <h5 class="rn-card-title">ODR Analytics</h5>
+                    <p class="text-muted">Analyze dispute categories, resolution timelines, mediator workload and platform performance.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="rn-card">
+                    <div class="text-warning mb-3"><i class="bi bi-pen" style="font-size:2.5rem;"></i></div>
+                    <h5 class="rn-card-title">Digital Agreement Execution</h5>
+                    <p class="text-muted">Electronic signing, identity authentication, timestamps and document integrity verification.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

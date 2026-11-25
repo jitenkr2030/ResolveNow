@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Category Analytics - ResolveNow{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{% url 'dashboard:home' %}" class="text-decoration-none small"><i class="bi bi-arrow-left"></i> Dashboard</a>
+            <h2 class="fw-bold text-primary mb-0 mt-1"><i class="bi bi-bounding-box me-2"></i>Category Analytics</h2>
+            <p class="text-muted mb-0">ResolveNow ODR platform module.</p>
+        </div>
+    </div>
+    <div class="rn-card">
+        <h5 class="rn-card-title">Category Analytics</h5>
+        <p class="text-muted">ResolveNow ODR platform module. This is part of the ResolveNow Online Dispute Resolution (ODR) platform covering 24 Django apps and 22 feature areas.</p>
+        <div class="row g-3 mt-2">
+            <div class="col-md-6"><div class="border rounded p-3"><h6 class="text-primary">Module</h6><ul class="small mb-0"><li>App: <code>analytics</code></li><li>View: <code>categories</code></li></ul></div></div>
+            <div class="col-md-6"><div class="border rounded p-3"><h6 class="text-primary">Related Links</h6><ul class="small mb-0"><li><a href="{% url 'analytics:dashboard' %}">Analytics</a></li>
+<li><a href="{% url 'analytics:categories' %}">Categories</a></li>
+<li><a href="{% url 'analytics:mediators' %}">Mediators</a></li>
+<li><a href="{% url 'admin_dash:reports' %}">Reports</a></li>
+</ul></div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

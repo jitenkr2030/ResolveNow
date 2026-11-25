@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Login History - ResolveNow{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold text-primary mb-3"><i class="bi bi-clock-history me-2"></i>Login History & Device Management</h2>
+    <p class="text-muted">Track all sign-in activity on your account.</p>
+    <div class="rn-table-card">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Time</th>
+                    <th>IP Address</th>
+                    <th>Device</th>
+                    <th>Browser</th>
+                    <th>OS</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logins %}
+                <tr>
+                    <td>{{ log.login_time|date:"M d, Y H:i" }}</td>
+                    <td><code>{{ log.ip_address|default:"-" }}</code></td>
+                    <td><i class="bi bi-{% if log.device_type == "mobile" %}phone{% elif log.device_type == "tablet" %}tablet{% else %}laptop{% endif %}"></i> {{ log.device_type|default:"-" }}</td>
+                    <td>{{ log.browser|default:"-" }}</td>
+                    <td>{{ log.os|default:"-" }}</td>
+                    <td>{% if log.is_successful %}<span class="badge bg-success">Success</span>{% else %}<span class="badge bg-danger">Failed</span>{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center text-muted py-4">No login history yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if is_paginated %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>{% endif %}
+            <li class="page-item active"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.num_pages }}</span></li>
+            {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>{% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

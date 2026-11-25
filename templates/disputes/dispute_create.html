@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}File a Dispute - ResolveNow{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h2 class="fw-bold text-primary mb-1"><i class="bi bi-plus-circle me-2"></i>File a New Dispute</h2>
+        <p class="text-muted mb-0">Create a new dispute case (Section 2 - Dispute Registration & Case Filing)</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="rn-card mb-3">
+                    <h5 class="rn-card-title">1. Dispute Overview</h5>
+                    <div class="mb-3"><label class="form-label">Dispute Title *</label>{{ form.title }}</div>
+                    <div class="mb-3"><label class="form-label">Description *</label>{{ form.description }}</div>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Category *</label>{{ form.category }}</div>
+                        <div class="col-md-6"><label class="form-label">Sub-category (optional)</label>{{ form.sub_category }}</div>
+                    </div>
+                </div>
+                <div class="rn-card mb-3">
+                    <h5 class="rn-card-title">2. Claimed Amount</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Disputed Amount *</label>{{ form.disputed_amount }}</div>
+                        <div class="col-md-3"><label class="form-label">Currency</label>{{ form.currency }}</div>
+                        <div class="col-md-3"><div class="form-check mt-4">{{ form.is_amount_confidential }}<label class="form-check-label">Confidential amount</label></div></div>
+                    </div>
+                </div>
+                <div class="rn-card mb-3">
+                    <h5 class="rn-card-title">3. Agreement & Communication</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Agreement Reference</label>{{ form.agreement_reference }}</div>
+                        <div class="col-md-6"><label class="form-label">Agreement Date</label>{{ form.agreement_date }}</div>
+                        <div class="col-md-12"><label class="form-label">Agreement Summary</label>{{ form.agreement_summary }}</div>
+                        <div class="col-md-12"><label class="form-label">Previous Communication History</label>{{ form.previous_communication_history }}</div>
+                    </div>
+                </div>
+                <div class="rn-card mb-3">
+                    <h5 class="rn-card-title">4. Resolution Requested</h5>
+                    <div class="mb-3"><label class="form-label">Requested Resolution *</label>{{ form.requested_resolution }}</div>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Jurisdiction</label>{{ form.jurisdiction }}</div>
+                        <div class="col-md-6"><label class="form-label">Location of Dispute</label>{{ form.location_of_dispute }}</div>
+                    </div>
+                </div>
+                <div class="rn-card">
+                    <h5 class="rn-card-title">5. Case Settings</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Priority</label>{{ form.priority }}</div>
+                        <div class="col-md-6"><div class="form-check mt-4">{{ form.is_confidential }}<label class="form-check-label">Confidential case (visible only to parties and mediator)</label></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="rn-card sticky-top" style="top:90px;">
+                    <h5 class="rn-card-title">What happens next?</h5>
+                    <ol class="small">
+                        <li>Your dispute will be saved as a <strong>draft</strong>.</li>
+                        <li>You'll be able to invite the <strong>respondent</strong> and any other parties.</li>
+                        <li>Upload supporting documents and contracts.</li>
+                        <li>When ready, <strong>submit</strong> for acknowledgement.</li>
+                        <li>The platform screens your dispute for legal eligibility.</li>
+                        <li>Once eligible, you can <strong>negotiate</strong> and request a <strong>mediator</strong>.</li>
+                        <li>Mediation sessions are scheduled online; settlement is documented and signed.</li>
+                    </ol>
+                    <hr>
+                    <p class="small text-muted">Note: disputes involving criminal matters, family violence, or specific regulated categories may not be eligible for ODR. The platform screens disputes for legal eligibility before accepting them into mediation.</p>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-accent btn-lg"><i class="bi bi-save me-2"></i>Save as Draft</button>
+                        <a href="{% url 'disputes:list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

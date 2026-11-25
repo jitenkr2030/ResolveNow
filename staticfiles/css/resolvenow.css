@@ -1,0 +1,288 @@
+/* ResolveNow ODR Platform - Custom Styles */
+:root {
+    --rn-primary: #1a3a5c;
+    --rn-primary-light: #2c5282;
+    --rn-accent: #ff8c42;
+    --rn-accent-dark: #e76f1e;
+    --rn-success: #2e7d32;
+    --rn-warning: #f59e0b;
+    --rn-danger: #dc2626;
+    --rn-bg: #f7f9fb;
+    --rn-border: #e2e8f0;
+}
+
+body {
+    background-color: var(--rn-bg);
+    font-family: "Segoe UI", "Inter", system-ui, -apple-system, sans-serif;
+    color: #2d3748;
+}
+
+.resolvenow-navbar {
+    background: linear-gradient(135deg, var(--rn-primary) 0%, var(--rn-primary-light) 100%);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.rn-logo {
+    background: var(--rn-accent);
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+.navbar-brand {
+    font-size: 1.25rem;
+    color: white !important;
+}
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    border-radius: 6px;
+    margin: 0 2px;
+}
+.navbar-dark .navbar-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+.navbar-dark .navbar-nav .nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+.rn-role-pill {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    margin-left: 6px;
+}
+.rn-badge {
+    background: var(--rn-accent);
+    color: white;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    margin-left: 4px;
+    font-weight: 700;
+}
+.rn-footer {
+    background: var(--rn-primary);
+    color: white;
+}
+
+/* Cards */
+.rn-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--rn-border);
+    padding: 1.5rem;
+    height: 100%;
+}
+.rn-card-title {
+    color: var(--rn-primary);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+.rn-stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid var(--rn-accent);
+    transition: transform 0.2s;
+}
+.rn-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.rn-stat-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--rn-primary);
+    margin: 0;
+}
+.rn-stat-label {
+    color: #718096;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--rn-primary);
+    border-color: var(--rn-primary);
+}
+.btn-primary:hover {
+    background: var(--rn-primary-light);
+    border-color: var(--rn-primary-light);
+}
+.btn-accent {
+    background: var(--rn-accent);
+    border-color: var(--rn-accent);
+    color: white;
+}
+.btn-accent:hover {
+    background: var(--rn-accent-dark);
+    border-color: var(--rn-accent-dark);
+    color: white;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+.status-draft { background: #e2e8f0; color: #4a5568; }
+.status-submitted { background: #dbeafe; color: #1e40af; }
+.status-under_review, .status-under_investigation { background: #fef3c7; color: #92400e; }
+.status-awaiting_party_response { background: #fce7f3; color: #9d174d; }
+.status-eligible_for_mediation { background: #d1fae5; color: #065f46; }
+.status-mediator_assignment { background: #e0e7ff; color: #3730a3; }
+.status-negotiation_in_progress { background: #ddd6fe; color: #5b21b6; }
+.status-mediation_scheduled { background: #ede9fe; color: #5b21b6; }
+.status-mediation_in_progress { background: #fed7aa; color: #9a3412; }
+.status-settlement_proposed { background: #fef9c3; color: #854d0e; }
+.status-settlement_accepted, .status-completed, .status-successful { background: #bbf7d0; color: #14532d; }
+.status-closed, .status-withdrawn, .status-unresolved, .status-rejected, .status-failed { background: #fecaca; color: #7f1d1d; }
+.status-pending { background: #e2e8f0; color: #4a5568; }
+
+/* Side navigation */
+.rn-sidebar {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.rn-sidebar h6 {
+    color: var(--rn-primary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    margin: 1rem 0 0.5rem;
+}
+.rn-sidebar a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    color: #4a5568;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+.rn-sidebar a:hover {
+    background: var(--rn-bg);
+    color: var(--rn-primary);
+}
+.rn-sidebar a.active {
+    background: var(--rn-primary);
+    color: white;
+}
+
+/* Hero */
+.rn-hero {
+    background: linear-gradient(135deg, var(--rn-primary) 0%, var(--rn-primary-light) 100%);
+    color: white;
+    padding: 4rem 0;
+}
+.rn-hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+.rn-hero p {
+    font-size: 1.15rem;
+    opacity: 0.95;
+    margin-bottom: 1.5rem;
+}
+
+/* Timeline */
+.rn-timeline {
+    list-style: none;
+    padding-left: 0;
+}
+.rn-timeline-item {
+    position: relative;
+    padding: 0.5rem 0 1rem 2rem;
+    border-left: 2px solid var(--rn-border);
+}
+.rn-timeline-item:before {
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 0.7rem;
+    width: 12px;
+    height: 12px;
+    background: var(--rn-accent);
+    border-radius: 50%;
+    border: 2px solid white;
+}
+.rn-timeline-item:last-child {
+    border-left: 2px solid transparent;
+}
+
+/* Forms */
+.form-control:focus, .form-select:focus {
+    border-color: var(--rn-accent);
+    box-shadow: 0 0 0 0.2rem rgba(255, 140, 66, 0.2);
+}
+
+/* Tabs */
+.nav-tabs .nav-link {
+    color: #4a5568;
+    font-weight: 500;
+}
+.nav-tabs .nav-link.active {
+    color: var(--rn-primary);
+    font-weight: 700;
+}
+
+/* Tables */
+.table-hover tbody tr:hover {
+    background: rgba(26, 58, 92, 0.04);
+    cursor: pointer;
+}
+.rn-table-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Empty state */
+.rn-empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #718096;
+}
+.rn-empty-state i {
+    font-size: 4rem;
+    opacity: 0.4;
+}
+
+/* Portal-specific */
+.portal-hero {
+    background: linear-gradient(135deg, var(--rn-primary) 0%, var(--rn-primary-light) 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+}
+.portal-hero h2 {
+    color: white;
+    margin-bottom: 0.5rem;
+}
+.portal-hero .badge {
+    background: var(--rn-accent);
+    color: white;
+}

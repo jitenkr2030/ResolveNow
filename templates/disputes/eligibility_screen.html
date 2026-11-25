@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Eligibility Screening - {{ dispute.case_ref }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <a href="{% url 'disputes:detail' pk=dispute.pk %}" class="text-decoration-none small"><i class="bi bi-arrow-left"></i> Back to dispute</a>
+        <h2 class="fw-bold text-primary mt-1 mb-1"><i class="bi bi-check2-square me-2"></i>Eligibility Screening</h2>
+        <p class="text-muted mb-0">{{ dispute.case_ref }} - {{ dispute.title }} (Category: {{ dispute.category.name }})</p>
+    </div>
+
+    <div class="alert alert-info">
+        <h6 class="alert-heading"><i class="bi bi-info-circle me-2"></i>Legal Eligibility Check</h6>
+        <p class="mb-0">The platform screens disputes for legal eligibility and suitability before accepting them into a mediation process. Please answer the following questions honestly. Your responses will be reviewed by a case manager.</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="rn-card">
+            <h5 class="rn-card-title">{{ dispute.category.name }} - Suitability Questionnaire</h5>
+            {% for q in questions %}
+            <div class="mb-3 border-bottom pb-3">
+                <p class="mb-2"><strong>Q{{ forloop.counter }}.</strong> {{ q.question }}</p>
+                {% if q.help_text %}<p class="small text-muted">{{ q.help_text }}</p>{% endif %}
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_yes" value="yes" required>
+                    <label class="form-check-label" for="q{{ q.id }}_yes">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_no" value="no" required>
+                    <label class="form-check-label" for="q{{ q.id }}_no">No</label>
+    </div>
+                {% if q.disqualifying_if_yes %}<div class="badge bg-warning text-dark mt-2">Disqualifying if yes</div>{% endif %}
+            </div>
+            {% empty %}
+            <p class="text-muted">No eligibility questions defined for this category. Submit to proceed.</p>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle me-2"></i>Submit Eligibility Check</button>
+            <a href="{% url 'disputes:detail' pk=dispute.pk %}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

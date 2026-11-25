@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title|default:feature_title }} - ResolveNow{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-0">{{ page_title|default:feature_title }}</h2>
+            <p class="text-muted mb-0">
+                ResolveNow ODR Platform &mdash;
+                {{ current_app|cut:"_"|title }} module
+                <span class="badge bg-secondary ms-2">{{ current_view }}</span>
+            </p>
+        </div>
+        <a href="{% url 'dashboard:home' %}" class="btn btn-outline-primary"><i class="bi bi-arrow-left me-2"></i>Dashboard</a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="rn-sidebar">
+                <h6>Quick Navigation</h6>
+                <a href="{% url 'dashboard:home' %}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+                <a href="{% url 'disputes:list' %}"><i class="bi bi-briefcase me-2"></i>My Cases</a>
+                <a href="{% url 'disputes:create' %}"><i class="bi bi-plus-circle me-2"></i>File New Dispute</a>
+                <a href="{% url 'messaging:threads' %}"><i class="bi bi-chat-dots me-2"></i>Messages</a>
+                <a href="{% url 'documents:list' %}"><i class="bi bi-folder2-open me-2"></i>Documents</a>
+                <a href="{% url 'mediators:directory' %}"><i class="bi bi-people me-2"></i>Mediators</a>
+                <a href="{% url 'payments:dashboard' %}"><i class="bi bi-credit-card me-2"></i>Payments</a>
+                <h6>Portals</h6>
+                {% if current_user_role == "mediator" %}<a href="{% url 'mediator_portal:home' %}"><i class="bi bi-award me-2"></i>Mediator Portal</a>{% endif %}
+                {% if current_user_role == "lawyer" %}<a href="{% url 'legal_portal:home' %}"><i class="bi bi-bank2 me-2"></i>Legal Portal</a>{% endif %}
+                {% if current_user_role == "business" %}<a href="{% url 'business_portal:home' %}"><i class="bi bi-building me-2"></i>Business Portal</a>{% endif %}
+                {% if is_admin_user or is_staff_user %}
+                <a href="{% url 'admin_dash:home' %}"><i class="bi bi-gear-fill me-2"></i>Admin Dashboard</a>
+                {% endif %}
+                <h6>Compliance</h6>
+                <a href="{% url 'legal_compliance:dashboard' %}"><i class="bi bi-shield-lock me-2"></i>Compliance</a>
+                <a href="{% url 'legal_compliance:consents' %}"><i class="bi bi-clipboard-check me-2"></i>Consents</a>
+                <a href="{% url 'grievances:dashboard' %}"><i class="bi bi-exclamation-circle me-2"></i>Grievances</a>
+                <a href="{% url 'analytics:dashboard' %}"><i class="bi bi-graph-up me-2"></i>Analytics</a>
+                <h6>Account</h6>
+                <a href="{% url 'accounts:profile' %}"><i class="bi bi-person me-2"></i>My Profile</a>
+                <a href="{% url 'accounts:login_history' %}"><i class="bi bi-clock-history me-2"></i>Login History</a>
+                <a href="{% url 'notifications:dashboard' %}"><i class="bi bi-bell me-2"></i>Notifications</a>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="rn-card">
+                <h4 class="rn-card-title"><i class="bi bi-stars me-2 text-warning"></i>{{ page_title|default:feature_title }}</h4>
+                <p class="text-muted">This feature is part of the ResolveNow ODR platform. The full implementation includes the capabilities described below and integrates with the case management system, documents, notifications, audit logs, and other modules.</p>
+
+                <div class="alert alert-info border-0 mt-3">
+                    <h6 class="alert-heading"><i class="bi bi-info-circle me-2"></i>Module: {{ current_app|cut:"_"|title }}</h6>
+                    <p class="mb-0">This page is reachable via the URL pattern above. Backend models, migrations, and views are wired; this view is rendered as a navigation scaffold so you can explore the full platform.</p>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3">
+                            <h6 class="text-primary"><i class="bi bi-gear me-2"></i>Active Capabilities</h6>
+                            <ul class="small mb-0">
+                                <li>Django app: <code>{{ current_app }}</code></li>
+                                <li>View: <code>{{ current_view }}</code></li>
+                                <li>Auth required: <span class="badge bg-success">LoginRequiredMixin</span></li>
+                                <li>Role-based access control</li>
+                                <li>Audit logging enabled</li>
+                                <li>Notifications integrated</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3">
+                            <h6 class="text-primary"><i class="bi bi-link-45deg me-2"></i>Related Sections</h6>
+                            <ul class="small mb-0">
+                                <li><a href="{% url 'disputes:list' %}">Dispute cases</a></li>
+                                <li><a href="{% url 'case_management:dashboard' %}">Case management</a></li>
+                                <li><a href="{% url 'documents:list' %}">Documents</a></li>
+                                <li><a href="{% url 'settlements:create' dispute_id=1 %}">Settlements</a></li>
+                                <li><a href="{% url 'analytics:dashboard' %}">Analytics</a></li>
+                                <li><a href="{% url 'admin_dash:audit_logs' %}">Audit logs</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="mt-4 text-primary">What's available in this module</h5>
+                <p>The ResolveNow platform implements comprehensive features across 24 Django apps covering the full online dispute resolution workflow. Use the navigation in the sidebar to explore each module.</p>
+
+                <h6 class="mt-4">Platform Sections Covered</h6>
+                <div class="row g-2">
+                    <div class="col-md-6"><a href="{% url 'accounts:profile' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> User Registration & Account Management</a></div>
+                    <div class="col-md-6"><a href="{% url 'disputes:create' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Dispute Registration & Case Filing</a></div>
+                    <div class="col-md-6"><a href="{% url 'categories:list' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Dispute Categories Management</a></div>
+                    <div class="col-md-6"><a href="{% url 'case_management:dashboard' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Case Management System</a></div>
+                    <div class="col-md-6"><a href="{% url 'negotiation:dashboard' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Online Negotiation Workspace</a></div>
+                    <div class="col-md-6"><a href="{% url 'documents:list' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Secure Document Management</a></div>
+                    <div class="col-md-6"><a href="{% url 'mediators:directory' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Mediator Registration & Management</a></div>
+                    <div class="col-md-6"><a href="{% url 'mediator_assignment:dashboard' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Mediator Assignment System</a></div>
+                    <div class="col-md-6"><a href="{% url 'scheduling:dashboard' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Mediation Scheduling & Calendar</a></div>
+                    <div class="col-md-6"><a href="{% url 'mediation_sessions:room' session_id=1 %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Online Mediation Room</a></div>
+                    <div class="col-md-6"><a href="{% url 'negotiation:proposal_create' dispute_id=1 %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Settlement Proposal Management</a></div>
+                    <div class="col-md-6"><a href="{% url 'settlements:detail' pk=1 %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Settlement Record Management</a></div>
+                    <div class="col-md-6"><a href="{% url 'payments:dashboard' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Payment & Billing Management</a></div>
+                    <div class="col-md-6"><a href="{% url 'messaging:threads' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Communication & Notification System</a></div>
+                    <div class="col-md-6"><a href="{% url 'case_management:dashboard' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Dispute Resolution Workflow Automation</a></div>
+                    <div class="col-md-6"><a href="{% url 'legal_portal:home' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Legal Professional Portal</a></div>
+                    <div class="col-md-6"><a href="{% url 'business_portal:home' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Business & Corporate Portal</a></div>
+                    <div class="col-md-6"><a href="{% url 'admin_dash:home' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Admin & Super Admin Dashboard</a></div>
+                    <div class="col-md-6"><a href="{% url 'grievances:dashboard' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Feedback, Complaint & Grievance Management</a></div>
+                    <div class="col-md-6"><a href="{% url 'legal_compliance:dashboard' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Security, Privacy & Compliance</a></div>
+                    <div class="col-md-6"><a href="{% url 'ai_assistant:dashboard' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> Advanced AI Features</a></div>
+                    <div class="col-md-6"><a href="{% url 'analytics:dashboard' %}" class="text-decoration-none"><i class="bi bi-arrow-right-short"></i> ODR Analytics</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

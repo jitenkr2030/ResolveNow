@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Track Application Status - ResolveNow{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h2 class="fw-bold text-primary mb-1"><i class="bi bi-search me-2"></i>Track Application Status</h2>
+        <p class="text-muted mb-0">Enter your case reference number to check the current status</p>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="rn-card">
+                <form method="get">
+                    <div class="mb-3">
+                        <label class="form-label">Case Reference Number</label>
+                        <input type="text" name="case_ref" class="form-control" value="{{ request.GET.case_ref }}" placeholder="RN-2026-XXXXXX" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-search me-2"></i>Track Status</button>
+                </form>
+                {% if error %}<div class="alert alert-warning mt-3">{{ error }}</div>{% endif %}
+                {% if dispute %}
+                <hr>
+                <h5 class="text-primary">Case Status: {{ dispute.case_ref }}</h5>
+                <table class="table">
+                    <tr><th>Title</th><td>{{ dispute.title }}</td></tr>
+                    <tr><th>Category</th><td>{{ dispute.category.name }}</td></tr>
+                    <tr><th>Status</th><td><span class="status-badge status-{{ dispute.status }}">{{ dispute.get_status_display }}</span></td></tr>
+                    <tr><th>Priority</th><td>{{ dispute.get_priority_display }}</td></tr>
+                    <tr><th>Filed On</th><td>{{ dispute.created_at|date:"M d, Y H:i" }}</td></tr>
+                    <tr><th>Submitted On</th><td>{% if dispute.submitted_at %}{{ dispute.submitted_at|date:"M d, Y" }}{% else %}Draft{% endif %}</td></tr>
+                    <tr><th>Acknowledged</th><td>{% if dispute.acknowledged_at %}{{ dispute.acknowledged_at|date:"M d, Y H:i" }}{% else %}Pending{% endif %}</td></tr>
+                </table>
+                <h6 class="text-primary mt-4">Status History</h6>
+                <ul class="rn-timeline">
+                    {% for entry in status_history %}
+                    <li class="rn-timeline-item">
+                        <strong>{{ entry.title }}</strong>
+                        <div class="small text-muted">{{ entry.created_at|date:"M d, Y H:i" }}</div>
+                        {% if entry.description %}<div class="small">{{ entry.description }}</div>{% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
